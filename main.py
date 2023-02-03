@@ -12,35 +12,18 @@ HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36"
 }
 
-
-def get_raw_data_headless():
-    options = webdriver.ChromeOptions()
-    options.add_argument("--disable-extensions")
-    options.add_argument("--disable-gpu")
-    options.add_argument("--no-sandbox")
-    options.add_argument("start-maximized")
-    options.add_argument("disable-infobars")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--disable-browser-side-navigation")
-    options.add_argument("--disable-gpu-sandbox")
-    options.add_argument("--headless")
-
-    options.headless = True
-
-    driver = webdriver.Chrome(options=options,
-                              executable_path=r"D:\Python\Lib\site-packages\chromedriver_win32\chromedriver.exe")
-    driver.get(URL)
-    html = driver.page_source
-    driver.quit()
-    print(html)
-
-
+"""
+    This function is getting the raw data from the website
+"""
 def get_raw_data():
     response = requests.get(URL, headers=HEADERS)
     soup = BeautifulSoup(response.text, "html.parser")
     return soup.find("div", {"class": "cept-event-deals js-threadList listLayout-main cept-personalization-default cept-picking-method-manual_picks"})
 
 
+"""
+    This function is gets the raw data from the website, then it parses it and stores it in a JSON file
+"""
 def make_dataset():
     dataset = []
     raw_data = get_raw_data()
@@ -77,4 +60,5 @@ def make_dataset():
         file.write(json.dumps(dataset, ensure_ascii=False, indent=4))
 
 
-get_raw_data_headless()
+if __name__ == "__main__":
+    make_dataset()
